@@ -3,6 +3,16 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatMenuModule } from '@angular/material/menu';
+
+import { AngularTableauModule, TABLEAU_API } from "angular-tableau";
+
+
 
 @NgModule({
   declarations: [
@@ -10,9 +20,22 @@ import { AppComponent } from './app.component';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    MatToolbarModule,
+    MatIconModule,
+    MatButtonModule,
+    MatMenuModule,
+    BrowserModule,
+    AngularTableauModule
   ],
-  providers: [],
+  providers: [
+    {
+      provide: TABLEAU_API,
+      useValue:
+        "https://online.tableau.com/javascripts/api/tableau-2.8.0.min.js",
+    },
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
