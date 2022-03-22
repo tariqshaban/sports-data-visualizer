@@ -1,9 +1,10 @@
 <mat-toolbar color="primary">
-    <span class="clickable-span" role="button" (click)="clearDashboard()">Sports Data Visualizer</span>
-    <div *ngIf="dashboard">
-        <p class="h6 m-0 pl-5">{{dashboard}}</p>
-    </div>
-    <span class="example-spacer"></span>
+    <span class="clickable-span" role="button" (click)="clearDashboard()">Sports Data Visualizer</span
+  >
+  <div *ngIf="current_plot">
+    <p class="h6 m-0 pl-5">{{current_plot.title}}</p>
+  </div>
+  <span class="example-spacer"></span>
     <button mat-icon-button [matMenuTriggerFor]="dashboards" aria-label="Example icon-button with a menu">
     <mat-icon>more_vert</mat-icon>
   </button>
@@ -30,6 +31,10 @@
     <mat-icon color="primary">flag</mat-icon>
     <span>Player Nationality</span>
   </button>
+    <button (click)="setDashboard($event)" mat-menu-item>
+    <mat-icon color="primary">scatter_plot</mat-icon>
+    <span>Scatter Plot Matrix</span>
+  </button>
     <button mat-menu-item [matMenuTriggerFor]="hypothesis_testing">
     <mat-icon color="primary">science</mat-icon>
     <span>Hypothesis Testing</span>
@@ -49,7 +54,6 @@
     <button (click)="setDashboard($event)" mat-menu-item>League Performance</button>
 </mat-menu>
 
-
 <mat-menu #hypothesis_testing="matMenu">
     <button (click)="setDashboard($event)" mat-menu-item>Yearly Attendance Hypothesis Testing</button>
     <button (click)="setDashboard($event)" mat-menu-item>Club Attendance Hypothesis Testing</button>
@@ -57,6 +61,26 @@
     <button (click)="setDashboard($event)" mat-menu-item>Club Position Goals Hypothesis Testing</button>
 </mat-menu>
 
-<div class="p-5" style="height: 90%; width: 100%;">
-    <angular-tableau [src]="url_value"></angular-tableau>
+<div class="px-5 py-2" style="height: 85%; width: 100%">
+
+    <div class="mb-2">
+        <mat-accordion *ngIf="current_plot && (current_plot.descriptions.length || current_plot.caption)">
+            <mat-expansion-panel [(expanded)]="is_panel_open" (opened)="is_panel_open = true" (closed)="is_panel_open = false">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        {{current_plot.caption}}
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <hr class="mt-0 pt-0" style="background-color: #a0a0a0;">
+                <h4>Main Observations:</h4>
+                <ul class="my-0 py-0">
+                    <li *ngFor="let description of current_plot.descriptions">
+                        <h4>{{description}}</h4>
+                    </li>
+                </ul>
+            </mat-expansion-panel>
+        </mat-accordion>
+    </div>
+
+    <angular-tableau *ngIf="current_plot" [src]="current_plot.url"></angular-tableau>
 </div>

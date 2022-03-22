@@ -9,6 +9,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
+import {MatExpansionModule} from '@angular/material/expansion';
 
 import { AngularTableauModule, TABLEAU_API } from "angular-tableau";
 
@@ -27,7 +28,8 @@ import { AngularTableauModule, TABLEAU_API } from "angular-tableau";
     MatButtonModule,
     MatMenuModule,
     BrowserModule,
-    AngularTableauModule
+    AngularTableauModule,
+    MatExpansionModule
   ],
   providers: [
     {
