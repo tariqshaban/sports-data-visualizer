@@ -1,0 +1,83 @@
+<div class="mb-5">
+    <mat-accordion *ngIf="classification && (classification.descriptions.length || classification.caption)">
+        <mat-expansion-panel [(expanded)]="isPanelOpen" (opened)="isPanelOpen = true" (closed)="isPanelOpen = false">
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    {{classification.caption}}
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+            <hr class="mt-0 pt-0">
+            <h4>Notes:</h4>
+            <ul class="my-0 py-0">
+                <li *ngFor="let description of classification.descriptions">
+                    <h4>{{description}}</h4>
+                </li>
+            </ul>
+        </mat-expansion-panel>
+    </mat-accordion>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <form [formGroup]="winnerForm" class="mb-5">
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <mat-form-field class="full-width" appearance="fill">
+                        <mat-label>Team 1</mat-label>
+                        <input type="text" matInput formControlName="team1Control" [matAutocomplete]="team1" required>
+                        <mat-autocomplete #team1="matAutocomplete">
+                            <mat-option *ngFor="let option of filteredOptionsTeam1 | async" [value]="option">
+                                {{option}}
+                            </mat-option>
+                        </mat-autocomplete>
+                    </mat-form-field>
+
+                    <div class="d-flex justify-content-between">
+                        <mat-hint align="start" *ngIf="winnerForm.errors?.['valuesMatch']">
+                            <p style="color: red;">Team 1 and team 2 must not be the same</p>
+                        </mat-hint>
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <mat-form-field class="full-width" appearance="fill">
+                        <mat-label>Team 2</mat-label>
+                        <input name="team2" type="text" matInput formControlName="team2Control" [matAutocomplete]="team2" required>
+                        <mat-autocomplete #team2="matAutocomplete">
+                            <mat-option *ngFor="let option of filteredOptionsTeam2 | async" [value]="option">
+                                {{option}}
+                            </mat-option>
+                        </mat-autocomplete>
+                    </mat-form-field>
+                    <div class="d-flex justify-content-between">
+                        <div class="align-self-center">
+                            <mat-slide-toggle color="primary" name="isTeam1Host" [(ngModel)]="isTeam1Host" [ngModelOptions]="{standalone: true}">Team 1 is host</mat-slide-toggle>
+                        </div>
+                        <div>
+                            <button (click)="submit()" color="primary" mat-raised-button>Submit</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="jumbotron">
+            <div class="d-flex justify-content-between">
+                <h3 *ngIf="winner">{{winner}}</h3>
+                <h3 *ngIf="!winner">The team winner will be displayed here</h3>
+                <mat-spinner *ngIf="isHTTPRequesting" [diameter]="30"></mat-spinner>
+            </div>
+            <hr class="mt-0 pt-0">
+            <div *ngIf="winner">
+                <h3>Response:</h3>
+                <ul class="row">
+                    <li *ngFor="let item of responseBody | keyvalue: returnZeroPipe" class="col-lg-6">
+                        <h4 style="display: inline">{{item.key}}: </h4>
+                        <button style="display: inline; cursor: default; border: none;" class="btn-sm" mat-stroked-button color="primary" disableRipple="true">{{item.value}}</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <img class="full-width" style="image-rendering: -webkit-optimize-contrast;" [src]="classification.image">
+    </div>
+</div>

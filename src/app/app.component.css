@@ -1,7 +1,20 @@
-.example-spacer {
+.toolbar-spacer {
     flex: 1 1 auto;
 }
 
 .clickable-span {
     cursor: pointer;
+}
+
+hr {
+    background-color: #A0A0A0 !important;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.jumbotron {
+    background-color: #424242;
+    padding: 1rem 2rem;
 }

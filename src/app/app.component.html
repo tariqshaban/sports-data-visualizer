@@ -1,11 +1,9 @@
 <mat-toolbar color="primary">
-    <span class="clickable-span" role="button" (click)="clearDashboard()">Sports Data Visualizer</span
+    <span class="clickable-span" role="button" (click)="goToHome()">Sports Data Visualizer</span
   >
-  <div *ngIf="current_plot">
-    <p class="h6 m-0 pl-5">{{current_plot.title}}</p>
-  </div>
-  <span class="example-spacer"></span>
-    <button mat-icon-button [matMenuTriggerFor]="dashboards" aria-label="Example icon-button with a menu">
+  <p class="h6 m-0 pl-5">{{currentTitle}}</p>
+  <span class="toolbar-spacer"></span>
+    <button mat-icon-button [matMenuTriggerFor]="dashboards">
     <mat-icon>more_vert</mat-icon>
   </button>
 </mat-toolbar>
@@ -19,19 +17,19 @@
     <mat-icon color="primary">speed</mat-icon>
     <span>Performance</span>
   </button>
-    <button (click)="setDashboard($event)" mat-menu-item>
+    <button (click)="setPlot($event)" mat-menu-item>
     <mat-icon color="primary">cake</mat-icon>
     <span>Player Age</span>
   </button>
-    <button (click)="setDashboard($event)" mat-menu-item>
+    <button (click)="setPlot($event)" mat-menu-item>
     <mat-icon color="primary">discount</mat-icon>
     <span>League Cards</span>
   </button>
-    <button (click)="setDashboard($event)" mat-menu-item>
+    <button (click)="setPlot($event)" mat-menu-item>
     <mat-icon color="primary">flag</mat-icon>
     <span>Player Nationality</span>
   </button>
-    <button (click)="setDashboard($event)" mat-menu-item>
+    <button (click)="setPlot($event)" mat-menu-item>
     <mat-icon color="primary">scatter_plot</mat-icon>
     <span>Scatter Plot Matrix</span>
   </button>
@@ -39,48 +37,37 @@
     <mat-icon color="primary">science</mat-icon>
     <span>Hypothesis Testing</span>
   </button>
+    <button mat-menu-item [matMenuTriggerFor]="machine_learning">
+    <mat-icon color="primary">memory</mat-icon>
+    <span>Machine Learning</span>
+  </button>
 </mat-menu>
 
 <mat-menu #attendance="matMenu">
-    <button (click)="setDashboard($event)" mat-menu-item>Countries Attendance</button>
-    <button (click)="setDashboard($event)" mat-menu-item>Stadium Attendance</button>
-    <button (click)="setDashboard($event)" mat-menu-item>Teams Attendance</button>
-    <button (click)="setDashboard($event)" mat-menu-item>Worldwide Attendance</button>
+    <button (click)="setPlot($event)" mat-menu-item>Countries Attendance</button>
+    <button (click)="setPlot($event)" mat-menu-item>Stadium Attendance</button>
+    <button (click)="setPlot($event)" mat-menu-item>Teams Attendance</button>
+    <button (click)="setPlot($event)" mat-menu-item>Worldwide Attendance</button>
 </mat-menu>
 
 <mat-menu #performance="matMenu">
-    <button (click)="setDashboard($event)" mat-menu-item>Teams Performance</button>
-    <button (click)="setDashboard($event)" mat-menu-item>Player Performance</button>
-    <button (click)="setDashboard($event)" mat-menu-item>League Performance</button>
+    <button (click)="setPlot($event)" mat-menu-item>Teams Performance</button>
+    <button (click)="setPlot($event)" mat-menu-item>Player Performance</button>
+    <button (click)="setPlot($event)" mat-menu-item>League Performance</button>
 </mat-menu>
 
 <mat-menu #hypothesis_testing="matMenu">
-    <button (click)="setDashboard($event)" mat-menu-item>Yearly Attendance Hypothesis Testing</button>
-    <button (click)="setDashboard($event)" mat-menu-item>Club Attendance Hypothesis Testing</button>
-    <button (click)="setDashboard($event)" mat-menu-item>Player Position Height Hypothesis Testing</button>
-    <button (click)="setDashboard($event)" mat-menu-item>Club Position Goals Hypothesis Testing</button>
+    <button (click)="setPlot($event)" mat-menu-item>Yearly Attendance Hypothesis Testing</button>
+    <button (click)="setPlot($event)" mat-menu-item>Club Attendance Hypothesis Testing</button>
+    <button (click)="setPlot($event)" mat-menu-item>Player Position Height Hypothesis Testing</button>
+    <button (click)="setPlot($event)" mat-menu-item>Club Position Goals Hypothesis Testing</button>
+</mat-menu>
+
+<mat-menu #machine_learning="matMenu">
+    <button (click)="openClassification()" mat-menu-item>Winning Classification</button>
+    <button (click)="openRegression()" mat-menu-item>Goals Regression</button>
 </mat-menu>
 
 <div class="px-5 py-2" style="height: 85%; width: 100%">
-
-    <div class="mb-2">
-        <mat-accordion *ngIf="current_plot && (current_plot.descriptions.length || current_plot.caption)">
-            <mat-expansion-panel [(expanded)]="is_panel_open" (opened)="is_panel_open = true" (closed)="is_panel_open = false">
-                <mat-expansion-panel-header>
-                    <mat-panel-title>
-                        {{current_plot.caption}}
-                    </mat-panel-title>
-                </mat-expansion-panel-header>
-                <hr class="mt-0 pt-0" style="background-color: #a0a0a0;">
-                <h4>Main Observations:</h4>
-                <ul class="my-0 py-0">
-                    <li *ngFor="let description of current_plot.descriptions">
-                        <h4>{{description}}</h4>
-                    </li>
-                </ul>
-            </mat-expansion-panel>
-        </mat-accordion>
-    </div>
-
-    <angular-tableau *ngIf="current_plot" [src]="current_plot.url"></angular-tableau>
+    <router-outlet></router-outlet>
 </div>
