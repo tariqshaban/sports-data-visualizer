@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/internal/Subscription';
-import { Info } from '../info';
-import { PlotService } from '../plot.service';
+import { Info } from '.././models/info';
+import { PlotService } from '../services/plot.service';
 
 @Component({
   selector: 'app-plots',
@@ -14,7 +15,7 @@ export class PlotsComponent implements OnInit {
   plotSubscription: Subscription | undefined;
   isPanelOpen = false;
 
-  constructor(private _route: ActivatedRoute, private _plotService: PlotService) { }
+  constructor(private _snackBar: MatSnackBar, private _route: ActivatedRoute, private _plotService: PlotService) { }
 
   ngOnInit(): void {
     this.plotSubscription = this._route.paramMap.subscribe(paramMap => {
@@ -29,5 +30,12 @@ export class PlotsComponent implements OnInit {
     this._plotService.setSelectedPlot(undefined)
     this.plotSubscription?.unsubscribe();
   }
-}
 
+  getAnswer(value: string) {
+    this._snackBar.open(
+      value,
+      '',
+      { duration: 4000 }
+    );
+  }
+}

@@ -17,16 +17,18 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 
 import { AngularTableauModule, TABLEAU_API } from "angular-tableau";
 import { PlotsComponent } from './plots/plots.component';
-import { PlotService } from './plot.service';
+import { PlotService } from './services/plot.service';
 import { ClassificationComponent } from './classification/classification.component';
 import { RegressionComponent } from './regression/regression.component';
 import { HttpClientModule } from '@angular/common/http';
 
 import * as PlotlyJS from 'plotly.js-dist-min';
 import { PlotlyModule } from 'angular-plotly.js';
+import { HomeComponent } from './home/home.component';
 
 PlotlyModule.plotlyjs = PlotlyJS;
 
@@ -37,6 +39,7 @@ PlotlyModule.plotlyjs = PlotlyJS;
     PlotsComponent,
     ClassificationComponent,
     RegressionComponent,
+    HomeComponent,
   ],
   imports: [
     CommonModule,
@@ -57,6 +60,7 @@ PlotlyModule.plotlyjs = PlotlyJS;
     MatFormFieldModule,
     MatInputModule,
     MatProgressSpinnerModule,
+    MatSnackBarModule,
     PlotlyModule
   ],
   providers: [

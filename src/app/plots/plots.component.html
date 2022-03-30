@@ -1,5 +1,5 @@
 <div class="mb-2">
-    <mat-accordion *ngIf="selectedPlot && (selectedPlot.descriptions.length || selectedPlot.caption)">
+    <mat-accordion *ngIf="selectedPlot && (selectedPlot.descriptions.length || selectedPlot.qas.length || selectedPlot.caption)">
         <mat-expansion-panel [(expanded)]="isPanelOpen" (opened)="isPanelOpen = true" (closed)="isPanelOpen = false">
             <mat-expansion-panel-header>
                 <mat-panel-title>
@@ -7,6 +7,13 @@
                 </mat-panel-title>
             </mat-expansion-panel-header>
             <hr class="mt-0 pt-0">
+            <h4>Questions:</h4>
+            <ul class="my-0 py-0">
+                <div *ngFor="let qa of selectedPlot.qas">
+                    <button (click)="getAnswer(qa.answer)" color="primary" class="mb-2" mat-stroked-button>{{qa.question}}</button>
+                </div>
+            </ul>
+            <hr class="mt-2 pt-0">
             <h4>Main Observations:</h4>
             <ul class="my-0 py-0">
                 <li *ngFor="let description of selectedPlot.descriptions">

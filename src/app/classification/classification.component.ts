@@ -2,10 +2,11 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { map, Observable, startWith, Subscription } from 'rxjs';
-import { ApiEndpointService } from '../api-endpoint.service';
-import { Info } from '../info';
-import { TeamService } from '../team.service';
-import { TitleService } from '../title.service';
+import { ApiEndpointService } from '../services/api-endpoint.service';
+import { TeamService } from '../services/team.service';
+import { TitleService } from '../services/title.service';
+import { Info, QA } from '.././models/info';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-classification',
@@ -31,9 +32,13 @@ export class ClassificationComponent implements OnInit {
     'Winning Classification',
     'Predicts the winning team based on their historical data',
     [
-      'Only the team\'s names are required, since the endpoint have an abstraction layer in which it checks their historical data without the need to specify it manually.',
+      'Only the team names are required, since the endpoint have an abstraction layer in which it checks their historical data without the need to specify it manually.',
       'The most variables which contribute to the decision are the historical goals and which team is the host.',
       'The resulting accuracy is approximately %64.8.'
+    ],
+    [
+      new QA('Which team is most likely to win? Bayern Munich or Barcelona?', 'Bayern Munich.'),
+      new QA('Which team is most likely to win? Barcelona or Liverpool?', 'Barcelona, but only when they are home.')
     ],
     '',
     '../assets/image/roc.png'
@@ -41,7 +46,7 @@ export class ClassificationComponent implements OnInit {
   plotSubscription: Subscription | undefined;
   isPanelOpen = false;
 
-  constructor(private http: HttpClient, private _titleService: TitleService, private _teamService: TeamService, private _apiEndpointService: ApiEndpointService) { }
+  constructor(private _snackBar: MatSnackBar, private http: HttpClient, private _titleService: TitleService, private _teamService: TeamService, private _apiEndpointService: ApiEndpointService) { }
 
   ngOnInit(): void {
     this._titleService.setTitle(this.classification.title);
@@ -64,6 +69,14 @@ export class ClassificationComponent implements OnInit {
 
   ngOnDestroy() {
     this._titleService.setTitle('');
+  }
+
+  getAnswer(value: string) {
+    this._snackBar.open(
+      value,
+      '',
+      { duration: 4000 }
+    );
   }
 
   private _filterTeam1(value: string): string[] {

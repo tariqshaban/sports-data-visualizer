@@ -7,6 +7,13 @@
                 </mat-panel-title>
             </mat-expansion-panel-header>
             <hr class="mt-0 pt-0">
+            <h4>Questions:</h4>
+            <ul class="my-0 py-0">
+                <div *ngFor="let qa of classification.qas">
+                    <button (click)="getAnswer(qa.answer)" color="primary" class="mb-2" mat-stroked-button>{{qa.question}}</button>
+                </div>
+            </ul>
+            <hr class="mt-2 pt-0">
             <h4>Notes:</h4>
             <ul class="my-0 py-0">
                 <li *ngFor="let description of classification.descriptions">
@@ -50,7 +57,7 @@
                     </mat-form-field>
                     <div class="d-flex justify-content-between">
                         <div class="align-self-center">
-                            <mat-slide-toggle color="primary" name="isTeam1Host" [(ngModel)]="isTeam1Host" [ngModelOptions]="{standalone: true}">Team 1 is host</mat-slide-toggle>
+                            <mat-slide-toggle color="primary" name="isTeam1Host" [(ngModel)]="isTeam1Host" [ngModelOptions]="{standalone: true}">Team 1 is the home</mat-slide-toggle>
                         </div>
                         <div>
                             <button (click)="submit()" color="primary" mat-raised-button>Submit</button>

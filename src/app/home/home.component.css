@@ -1,0 +1,21 @@
+.feature {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 4rem;
+    width: 4rem;
+    font-size: 2rem;
+}
+
+.square {
+    border-radius: 0.3rem !important;
+    background-color: #4caf50;
+}
+
+.square-icon {
+    color: #303030;
+}
+
+mat-icon {
+    transform: scale(2);
+}

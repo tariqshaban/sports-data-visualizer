@@ -2,10 +2,11 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
-import { ApiEndpointService } from '../api-endpoint.service';
-import { Info } from '../info';
-import { InteractivePlotsService } from '../interactive-plots.service';
-import { TitleService } from '../title.service';
+import { ApiEndpointService } from '../services/api-endpoint.service';
+import { InteractivePlotsService } from '../services/interactive-plots.service';
+import { TitleService } from '../services/title.service';
+import { Info, QA } from '.././models/info';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-regression',
@@ -26,13 +27,19 @@ export class RegressionComponent implements OnInit {
   responseBody: Map<string, string> = new Map<string, string>();
   regressionPlot: any = '';
 
-  classification: Info = new Info(
+  regression: Info = new Info(
     'Goals Regression',
     'Predicts the a player\'s goals on their historical data',
     [
       'Only the player\'s shots and shots on target are required.',
-      'The R2 is approximately %91.7.',
+      'The R2 (coefficient of determination) is approximately %91.7.',
+      'R2 measures how well observed outcomes are replicated by the model (the higher, the better).',
+      'Not to be confused with mean squared error (MSE)',
       'The resulting equation is y = -0.68 + 0.64x1 + 0.32x2, having {x1∈R | x1>=0} and {x2∈R | x2>=0}, where x1 is \"shots\" and x2 is \"shots on goal\".'
+    ],
+    [
+      new QA('Given that a player had 10 shots and 5 shots on target. What is the estimated number of goals he acquired?', 'Approx. 7.67.'),
+      new QA('Given that a player had 20 shots and 7 shots on target. What is the estimated number of goals he acquired?', 'Approx. 14.53.'),
     ],
     '',
     ''
@@ -41,12 +48,12 @@ export class RegressionComponent implements OnInit {
   isPanelOpen = false;
   dynamicPlot: string = '';
 
-  constructor(private http: HttpClient, private _titleService: TitleService, private _apiEndpointService: ApiEndpointService , private _interactivePlotsService: InteractivePlotsService) { 
+  constructor(private _snackBar: MatSnackBar, private http: HttpClient, private _titleService: TitleService, private _apiEndpointService: ApiEndpointService , private _interactivePlotsService: InteractivePlotsService) { 
     this.regressionPlot = this._interactivePlotsService.graph;
   }
 
   ngOnInit(): void {
-    this._titleService.setTitle(this.classification.title);
+    this._titleService.setTitle(this.regression.title);
     this.isPanelOpen = false;
   }
 
@@ -54,6 +61,13 @@ export class RegressionComponent implements OnInit {
     this._titleService.setTitle('');
   }
 
+  getAnswer(value: string) {
+    this._snackBar.open(
+      value,
+      '',
+      { duration: 4000 }
+    );
+  }
 
   submit() {
     if (this.goalForm.get('shotsControl')?.value && this.goalForm.get('shotsOnTargetControl')?.value) {
