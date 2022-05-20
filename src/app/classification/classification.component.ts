@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
-import { map, Observable, startWith, Subscription } from 'rxjs';
+import { map, Observable, of, startWith, Subscription, timeout } from 'rxjs';
 import { ApiEndpointService } from '../services/api-endpoint.service';
 import { TeamService } from '../services/team.service';
 import { TitleService } from '../services/title.service';
@@ -21,6 +21,7 @@ export class ClassificationComponent implements OnInit {
     validators: this.uniqueValidator('team1Control', 'team2Control')
   });
   winner = '';
+  timeout = false;
   teamOptions: string[] = ['Loading...'];
   filteredOptionsTeam1?: Observable<string[]>;
   filteredOptionsTeam2?: Observable<string[]>;
@@ -41,7 +42,7 @@ export class ClassificationComponent implements OnInit {
       new QA('Which team is most likely to win? Barcelona or Liverpool?', 'Barcelona, but only when they are home.')
     ],
     '',
-    '../assets/image/roc.png'
+    './assets/image/roc.png'
   );
   plotSubscription: Subscription | undefined;
   isPanelOpen = false;
@@ -52,23 +53,31 @@ export class ClassificationComponent implements OnInit {
     this._titleService.setTitle(this.classification.title);
     this.isPanelOpen = false;
 
+    if (this._teamService.getTeams().length !== 0) {
+      this.populateTeams(this._teamService.getTeams());
+    }
+
     this._teamService.teamChange.subscribe((value) => {
-      this.teamOptions = value
-
-      this.filteredOptionsTeam1 = this.winnerForm.get('team1Control')?.valueChanges.pipe(
-        startWith(''),
-        map(value => this._filterTeam1(value)),
-      );
-
-      this.filteredOptionsTeam2 = this.winnerForm.get('team2Control')?.valueChanges.pipe(
-        startWith(''),
-        map(value => this._filterTeam2(value)),
-      );
+      this.populateTeams(value);
     });
   }
 
   ngOnDestroy() {
     this._titleService.setTitle('');
+  }
+
+  populateTeams(teams: string[]) {
+    this.teamOptions = teams
+
+    this.filteredOptionsTeam1 = this.winnerForm.get('team1Control')?.valueChanges.pipe(
+      startWith(''),
+      map(value => this._filterTeam1(value)),
+    );
+
+    this.filteredOptionsTeam2 = this.winnerForm.get('team2Control')?.valueChanges.pipe(
+      startWith(''),
+      map(value => this._filterTeam2(value)),
+    );
   }
 
   getAnswer(value: string) {
@@ -133,22 +142,34 @@ export class ClassificationComponent implements OnInit {
     url += '?club1=' + team1;
     url += '&club2=' + team2;
 
-    this.http.get<any>(url).subscribe(data => {
-      this.winner = data.winner;
-      this.responseBody.clear();
-      for (var key in data['details']) {
-        this.responseBody.set(key, data['details'][key].toPrecision(2));
-      }
+    this.http.get<any>(url)
+      .pipe(timeout(3000))
+      .subscribe({
+        next: (data) => {
+          this.timeout = false;
+          this.winner = data.winner;
+          this.responseBody.clear();
+          for (var key in data['details']) {
+            this.responseBody.set(key, data['details'][key].toPrecision(2));
+          }
 
-      this.responseBody = this.beautifyResponse(
-        this.responseBody,
-        this.winnerForm.get('team1Control')?.value,
-        this.winnerForm.get('team2Control')?.value
-      );
-      this.responseBody.set('Winner', data.winner);
+          this.responseBody = this.beautifyResponse(
+            this.responseBody,
+            this.winnerForm.get('team1Control')?.value,
+            this.winnerForm.get('team2Control')?.value
+          );
+          this.responseBody.set('Winner', data.winner);
 
-      this.isHTTPRequesting = false;
-    })
+          this.isHTTPRequesting = false;
+        },
+        error: () => {
+          this.winner = '';
+          this.responseBody.clear();
+          this.timeout = true;
+          this.isHTTPRequesting = false;
+          return of(null);
+        }
+      })
   }
 
   beautifyResponse(responseBody: Map<string, string>, team1: string, team2: string) {

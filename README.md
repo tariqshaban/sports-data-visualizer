@@ -6,6 +6,8 @@ It contains the code necessary to view plots from a Tableau public server.
 
 This projects merely provide a preview of the saved plots on the Tableau server.
 
+To view a live example, [click here](https://tariqshaban.github.io/sports-data-visualizer/).
+
 Getting Started
 ------------
 Clone the project from GitHub

@@ -28,8 +28,8 @@ export class TeamService {
       );
   }
 
-  _setTeams(title: string[]) {
-    this.teamChange.next(title);
+  _setTeams(teams: string[]) {
+    this.teamChange.next(teams);
   }
 
   getTeams() {

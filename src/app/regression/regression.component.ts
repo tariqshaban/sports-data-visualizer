@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, of, Subscription, timeout } from 'rxjs';
 import { ApiEndpointService } from '../services/api-endpoint.service';
 import { InteractivePlotsService } from '../services/interactive-plots.service';
 import { TitleService } from '../services/title.service';
@@ -19,6 +19,7 @@ export class RegressionComponent implements OnInit {
     'shotsOnTargetControl': new FormControl('', Validators.required),
   });
   winner = '';
+  timeout = false;
   teamOptions: string[] = ['Loading...'];
   filteredOptionsTeam1?: Observable<string[]>;
   filteredOptionsTeam2?: Observable<string[]>;
@@ -48,7 +49,7 @@ export class RegressionComponent implements OnInit {
   isPanelOpen = false;
   dynamicPlot: string = '';
 
-  constructor(private _snackBar: MatSnackBar, private http: HttpClient, private _titleService: TitleService, private _apiEndpointService: ApiEndpointService , private _interactivePlotsService: InteractivePlotsService) { 
+  constructor(private _snackBar: MatSnackBar, private http: HttpClient, private _titleService: TitleService, private _apiEndpointService: ApiEndpointService, private _interactivePlotsService: InteractivePlotsService) {
     this.regressionPlot = this._interactivePlotsService.graph;
   }
 
@@ -84,14 +85,26 @@ export class RegressionComponent implements OnInit {
     url += '?shots=' + shots;
     url += '&shots_on_target=' + shotsOnTarget;
 
-    this.http.get<any>(url).subscribe(data => {
-      this.winner = data['Estimated Goals'];
-      this.responseBody.clear();
-      for (var key in data) {
-        this.responseBody.set(key, data[key]);
-      }
+    this.http.get<any>(url)
+    .pipe(timeout(3000))
+    .subscribe({
+      next: (data) => {
+        this.timeout = false;
+        this.winner = data['Estimated Goals'];
+        this.responseBody.clear();
+        for (var key in data) {
+          this.responseBody.set(key, data[key]);
+        }
 
-      this.isHTTPRequesting = false;
+        this.isHTTPRequesting = false;
+      },
+      error: () => {
+        this.winner = '';
+        this.responseBody.clear();
+        this.timeout = true;
+        this.isHTTPRequesting = false;
+        return of(null);
+      }
     })
   }
 

@@ -51,8 +51,10 @@
         </form>
         <div class="jumbotron">
             <div class="d-flex justify-content-between">
+
+                <h3 style="color: red;" *ngIf="timeout">Could not connect to the remote server.</h3>
                 <h3 *ngIf="winner">{{winner}}</h3>
-                <h3 *ngIf="!winner">The goal approximation will be displayed here</h3>
+                <h3 *ngIf="!winner && !timeout">The goal approximation will be displayed here</h3>
                 <mat-spinner *ngIf="isHTTPRequesting" [diameter]="30"></mat-spinner>
             </div>
             <hr class="mt-0 pt-0">
