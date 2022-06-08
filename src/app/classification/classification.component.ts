@@ -143,7 +143,7 @@ export class ClassificationComponent implements OnInit {
     url += '&club2=' + team2;
 
     this.http.get<any>(url)
-      .pipe(timeout(3000))
+      .pipe(timeout(60 *1000))
       .subscribe({
         next: (data) => {
           this.timeout = false;
