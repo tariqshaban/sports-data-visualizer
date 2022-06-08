@@ -5,8 +5,8 @@ import { Injectable } from '@angular/core';
 })
 export class ApiEndpointService {
 
-  readonly winnerEndpoint = 'http://127.0.0.1:8000/machine_learning_models/winning';
-  readonly goalEndpoint = 'http://127.0.0.1:8000/machine_learning_models/goals';
+  readonly winnerEndpoint = 'https://machine-learning-model-server.herokuapp.com/machine_learning_models/winning';
+  readonly goalEndpoint = 'https://machine-learning-model-server.herokuapp.com/machine_learning_models/goals';
 
 
   constructor() {}
